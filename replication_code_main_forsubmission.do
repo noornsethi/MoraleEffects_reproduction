@@ -1,4 +1,15 @@
-* This is the master do-file for producing tables and figures in The Morale Effects of Pay Inequality (Breza, Kaur & Shamdasani)
+/* ==========================================================================
+   Paper:    The Morale Effects of Pay Inequality (Breza, Kaur & Shamdasani)
+   Purpose:   Produce all tables and figures
+   Last edit: Noor Sethi, noor_sethi@berkeley.edu on 5 April 2021
+   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   Data:  finaldataset.dta
+          el_games1.dta
+          el_games2.dta
+   Saved: AOFigure2.png
+          AOFigure3_plot*.png (10 plots)
+          AOFigure5.png
+   ========================================================================== */
 
 use "finaldataset.dta", replace
 
