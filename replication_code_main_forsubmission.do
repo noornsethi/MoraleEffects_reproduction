@@ -30,34 +30,14 @@
 *  Split by wage treatments  
    bysort Het: sum `tab2vars' if day_centered==0
    
-   reg married Het if day_centered==0, cluster(team_id)
-   reg numkids Het if day_centered==0  , cluster(team_id)
-   reg hasland Het if day_centered==0, cluster(team_id)
-   reg sharecrops Het if day_centered==0, cluster(team_id)
-   reg anymissedmeal30 Het if day_centered==0, cluster(team_id)
-   reg nofindwork30 Het if day_centered==0, cluster(team_id)
-   reg bl_numdaysworked  Het if day_centered==0, cluster(team_id)
-   reg bl_numdaysworked_invill  Het if day_centered==0, cluster(team_id)
-   reg bl_totwage  Het if day_centered==0, cluster(team_id)
-   reg endlinewage Het if day_centered==0, cluster(team_id)
-   reg piecerate_exp Het if day_centered==0, cluster(team_id)
-   reg baselineprod Het if day_centered==0, cluster(team_id)
-   reg baselineatt Het if day_centered==0, cluster(team_id)
+   foreach tab2var of varlist `tab2vars'{
+   	reg `tab2var' Het if day_centered==0, cluster(team_id)
+   }
    
-*  Limit to relevant only
-   reg married Het if day_centered==0 & relevant==1, cluster(team_id)
-   reg numkids Het if day_centered==0 & relevant==1, cluster(team_id)
-   reg hasland Het if day_centered==0 & relevant==1, cluster(team_id)
-   reg sharecrops Het if day_centered==0 & relevant==1, cluster(team_id)
-   reg anymissedmeal30 Het if day_centered==0 & relevant==1, cluster(team_id)
-   reg nofindwork30 Het if day_centered==0 & relevant==1, cluster(team_id)
-   reg bl_numdaysworked  Het if day_centered==0 & relevant==1, cluster(team_id)
-   reg bl_numdaysworked_invill  Het if day_centered==0 & relevant==1, cluster(team_id)
-   reg bl_totwage  Het if day_centered==0 & relevant==1, cluster(team_id)
-   reg endlinewage Het if day_centered==0 & relevant==1, cluster(team_id)
-   reg piecerate_exp Het if day_centered==0 & relevant==1, cluster(team_id)
-   reg baselineprod Het if day_centered==0 & relevant==1, cluster(team_id)
-   reg baselineatt Het if day_centered==0 & relevant==1, cluster(team_id)
+*  Limit to relevant only  
+   foreach tab2var of varlist `tab2vars'{
+   	reg `tab2var' Het if day_centered==0 & relevant==1, cluster(team_id)
+   }
    
    
 *= TABLE 3: Knowledge of Co-Worker Wages =======================================
@@ -69,12 +49,10 @@
    local tab3avars correctwage correctwage_one not_dk_team_one not_dk_team_both
    
    bysort Het: sum `tab3avars' if day_centered==0
-         
-   reg correctwage Het if day_centered==0, cluster(team_id)      
-   reg correctwage_one Het if day_centered==0, cluster(team_id)      
-   reg not_dk_team_one Het if day_centered==0, cluster(team_id)            
-   reg not_dk_team_both Het if day_centered==0, cluster(team_id)      
    
+   foreach tab3avar of `tab3avars' {
+   	reg `tab3avar' Het if day_centered==0, cluster(team_id)
+   }
    
 *  Panel B: Cross-unit comparisons
    preserve
@@ -741,10 +719,13 @@
    
    
 *= OA Table 9: Effects of Higher Absolute Pay by Rank ==========================
-   qui xtreg prodnorm Cwage_post_low medpost Cwage_post_med highpost Cwage_post_high i.rank i.day_round exper_task_lin* exper_task_sq* $neighbor_post_noT $neighbor_post if Het==0, fe cl(team_id)
+   
+   global tab9cntrls Cwage_post_low medpost Cwage_post_med highpost Cwage_post_high i.rank i.day_round exper_task_lin* exper_task_sq* $neighbor_post_noT $neighbor_post
+   
+   qui xtreg prodnorm `tab9cntrls' if Het==0, fe cl(team_id)
    est sto GER1
    
-   qui xtreg attendance Cwage_post_low medpost Cwage_post_med highpost Cwage_post_high i.rank i.day_round exper_task_lin* exper_task_sq* $neighbor_post_noT $neighbor_post if Het==0, fe cl(team_id)
+   qui xtreg attendance `tab9cntrls' if Het==0, fe cl(team_id)
    est sto GER2
    
    su prodnorm if rank==1 & C1==1 & post==1
